@@ -22,8 +22,8 @@ echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongod
 sudo apt update
 sudo apt install -y mongodb-org
 
+## commnads used to mainage mongo server
 sudo systemctl enable mongod.service
-
 sudo systemctl stop mongod.service
 sudo systemctl start mongod.service
 
