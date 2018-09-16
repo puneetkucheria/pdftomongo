@@ -26,47 +26,50 @@ def find_images_in_obj(outer_layout, pagenumber):
         if isinstance(lt_obj, LTImage):
 #            save_image(thing, pagenumber)
             save_image_mongo(path, pagenumber, 'LTImage', lt_obj.name, lt_obj.srcsize, lt_obj.stream.get_data())
-def extract_pdf():
+def extract_pdf(path='1.pdf'):
     #path = 'RetailPharmacyInventory.pdf'
-    print(check_file_exist(path))
-    fp = open(path, 'rb')
-    parser = PDFParser(fp)
-    doc = PDFDocument()
-    parser.set_document(doc)
-    doc.set_parser(parser)
-    doc.initialize('')
-    rsrcmgr = PDFResourceManager()
-    laparams = LAParams()
-    #images_folder = 'images'
-    imagewriter = None
-    #outfp = StringIO()
-    device = PDFPageAggregator(rsrcmgr,laparams=laparams)
-    interpreter = PDFPageInterpreter(rsrcmgr, device)
-    extracted_text = ''
+ #   print(check_file_exist(path))
+    print(path)
+    if(not check_file_exist(path)):
+        fp = open(path, 'rb')
+        parser = PDFParser(fp)
+        doc = PDFDocument()
+        parser.set_document(doc)
+        doc.set_parser(parser)
+        doc.initialize('')
+        rsrcmgr = PDFResourceManager()
+        laparams = LAParams()
+        #images_folder = 'images'
+        imagewriter = None
+        #outfp = StringIO()
+        device = PDFPageAggregator(rsrcmgr,laparams=laparams)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        extracted_text = ''
 
-    # Process each page contained in the document.
-    for pagenumber, page in enumerate(doc.get_pages()):
-    #    print(page.__dict__)
-        interpreter.process_page(page)
-        layout = device.get_result()
-        for lt_obj in layout:
-            if isinstance(lt_obj, LTTextBox):
-                extracted_text = lt_obj.get_text()
-                save_text_mongo(path,pagenumber,"LTTextBox",extracted_text)
-            if isinstance(lt_obj, LTTextLine):
-                extracted_text = lt_obj.get_text()
-                if not extracted_text==' \n' and not extracted_text=='\n':
-                    save_text_mongo(path,pagenumber,"LTTextline",extracted_text)
-            if isinstance(lt_obj, LTFigure):
-    #            print(lt_obj.__dict__)
-    #            print('\n')
-                find_images_in_obj(lt_obj, pagenumber)
-            if isinstance(lt_obj, LTImage):
-    #            save_image(lt_obj,pagenumber)
-                save_image_mongo(path, pagenumber, 'LTImage', lt_obj.name, lt_obj.srcsize, lt_obj.stream.get_data())
-
+        # Process each page contained in the document.
+        for pagenumber, page in enumerate(doc.get_pages()):
+        #    print(page.__dict__)
+            interpreter.process_page(page)
+            layout = device.get_result()
+            for lt_obj in layout:
+                if isinstance(lt_obj, LTTextBox):
+                    extracted_text = lt_obj.get_text()
+                    save_text_mongo(path,pagenumber,"LTTextBox",extracted_text)
+                if isinstance(lt_obj, LTTextLine):
+                    extracted_text = lt_obj.get_text()
+                    if not extracted_text==' \n' and not extracted_text=='\n':
+                        save_text_mongo(path,pagenumber,"LTTextline",extracted_text)
+                if isinstance(lt_obj, LTFigure):
+        #            print(lt_obj.__dict__)
+        #            print('\n')
+                    find_images_in_obj(lt_obj, pagenumber)
+                if isinstance(lt_obj, LTImage):
+        #            save_image(lt_obj,pagenumber)
+                    save_image_mongo(path, pagenumber, 'LTImage', lt_obj.name, lt_obj.srcsize, lt_obj.stream.get_data())
+    else:
+        print('File already exists')
 if __name__ == '__main__':
-    path = 'RetailPharmacyInventory.pdf'
+    path = 'Reporting with Microsoft Project Server 2010.pdf'
     images_folder = 'images'
-    extract_pdf()
+    extract_pdf(path)
 

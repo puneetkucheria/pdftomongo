@@ -32,3 +32,23 @@ def get_image_stream(path, pagenumber, imagename):
 #    print(ans)
     connection.close()
     return ans['imagesize'], ans['imagestream']
+
+def search():
+    connection = MongoClient()
+    db = connection.db_pdftomongo.col_text_dump
+    output = []
+    for ans in db.find({'pagenumber':3},{'_id':1,'file':1}):
+        output.append({'file':ans['file'],'_id':str(ans['_id'])})
+    connection.close()
+    return output
+
+def search_text(text):
+    connection = MongoClient()
+    db = connection.db_pdftomongo.col_text_dump
+    output = []
+#db.col_text_dump.find({$text:{$search:"DMD"}})
+    for ans in db.find({'$text':{'$search':text}}):
+        output.append({'file':ans['file'],'_id':str(ans['_id']),'text':ans['text'],'pagenumber':ans['pagenumber']})
+    connection.close()
+    return output
+

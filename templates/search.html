@@ -1,0 +1,36 @@
+<html>
+    <Head>
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <script src="js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <IMG src="{{img}}" alt="not shown">
+        <h1>Search Keyword</h1>
+        <form method="POST" action="/searchtext">
+            <div class="form-group">
+                <input type="text" name="search" value="{{search}}">
+            </div>
+            <input class="btn btn-primary" type="submit" value="Search">
+        </form>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Page Number</th>
+                    <th>Text<th>
+                <tr>
+            </thead>
+            <tbody>
+     {%for item in output%}
+                <tr>
+                    <td>{{item.file}}</td>
+                    <td>{{item.pagenumber}}<td>
+                    <td>{{item.text}}</td>
+                </tr>
+    {%endfor%}
+            </tbody>
+        </table>
+
+    </body>
+</html>
